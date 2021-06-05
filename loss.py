@@ -21,7 +21,7 @@ class YoloLoss(nn.Module):
         # Constants signifying how much to pay for each respective part of the loss
         self.lambda_class = 1
         self.lambda_noobj = 10
-        self.lambda_obj   = 10
+        self.lambda_obj   = 1
         self.lambda_box   = 10
 
     def forward(self, predictions, target, anchors):
@@ -56,7 +56,7 @@ class YoloLoss(nn.Module):
         #   FOR CLASS LOSS   #
         # ================== #
 
-        #class_loss = self.entropy((predictions[..., 5:][obj]), (target[..., 5][obj].long()))
+        class_loss = self.entropy((predictions[..., 5:][obj]), (target[..., 5][obj].long()))
 
         #print("__________________________________")
         #print(self.lambda_box * box_loss)
@@ -69,5 +69,5 @@ class YoloLoss(nn.Module):
             self.lambda_box * box_loss
             + self.lambda_obj * object_loss
             + self.lambda_noobj * no_object_loss
-            #+ self.lambda_class * class_loss
+            + self.lambda_class * class_loss
         )
